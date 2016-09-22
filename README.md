@@ -1,6 +1,6 @@
-# Basic Template
+# Auth Example
 
-A basic vapor template for starting a new Vapor web application. If you're using vapor toolbox, you can use: `vapor new --template=basic`
+A basic example using authentication. Contains a basic `User` class stored in a Fluent memory driver that can be registered, logged in, and then access protected routes.
 
 ## 📖 Documentation
 
