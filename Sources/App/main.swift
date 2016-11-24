@@ -1,13 +1,11 @@
 import Vapor
 import Auth
 import Fluent
+import VaporMemory
 
-let database = Database(MemoryDriver())
+let drop = Droplet()
 
-let drop = Droplet(
-    database: database
-)
-
+try drop.addProvider(VaporMemory.Provider.self) // in memory "database"
 let auth = AuthMiddleware(user: User.self)
 drop.middleware.append(auth)
 drop.preparations = [User.self]
@@ -30,7 +28,7 @@ drop.group("users") { users in
 
         let creds = try Identifier(id: id)
         try req.auth.login(creds)
-        
+
         return try JSON(node: ["message": "Logged in via default, check vapor-auth cookie."])
     }
 
