@@ -1,16 +1,14 @@
 import Vapor
 import Auth
 import Fluent
+import VaporMemory
 
+let drop = Droplet()
+
+try drop.addProvider(VaporMemory.Provider.self) // in memory "database"
 let auth = AuthMiddleware(user: User.self)
-
-let database = Database(MemoryDriver())
-
-let drop = Droplet(
-    database: database,
-    availableMiddleware: ["auth": auth],
-    preparations: [User.self]
-)
+drop.middleware.append(auth)
+drop.preparations = [User.self]
 
 drop.group("users") { users in
     users.post { req in
@@ -31,7 +29,7 @@ drop.group("users") { users in
         let creds = try Identifier(id: id)
         try req.auth.login(creds)
 
-        return try JSON(node: ["message": "Logged in."])
+        return try JSON(node: ["message": "Logged in via default, check vapor-auth cookie."])
     }
 
     let protect = ProtectMiddleware(error:
